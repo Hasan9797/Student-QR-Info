@@ -12,3 +12,22 @@ datasource db {
   provider = "postgresql" // yoki "mysql", "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      Int
+  login     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Students {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  authorId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
