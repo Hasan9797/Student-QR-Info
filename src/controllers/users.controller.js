@@ -1,4 +1,4 @@
-import userService from "../../services/user.service.js";
+import userService from "../services/users.service.js";
 
 const getUsers = async (req, res) => {
   // const lang = req.headers['accept-language'] || 'ru';
