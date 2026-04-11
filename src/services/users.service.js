@@ -1,51 +1,39 @@
-import userRepository from "../repositories/user.repo.js";
-import { formatResponseDates } from "../helpers/formatDateHelper.js";
+import userRepository from "../repositories/users.repo.js";
 import bcrypt from "bcryptjs";
 import { deleteUserTokenByUserId } from "../repositories/userToken.repo.js";
 
 const getUsers = async (query) => {
-  try {
-    const users = await userRepository.getUsers(query);
-    return {
-      data: formatResponseDates(users.data),
-      pagination: users.pagination,
-    };
-  } catch (error) {
-    throw error;
-  }
+  const users = await userRepository.getUsers(query);
+  return {
+    data: users.data,
+    pagination: users.pagination,
+  };
 };
 
 const getUserById = async (userId) => {
-  try {
-    if (!userId) throw new Error("User id is required");
-    const user = await userRepository.getUser(userId);
-    const { password, ...rest } = user;
-    return formatResponseDates(rest);
-  } catch (error) {
-    throw error;
-  }
+  if (!userId) throw new Error("User id is required");
+  const user = await userRepository.getUser(userId);
+  const { password, ...rest } = user;
+  return rest;
+};
+
+const getByLogin = async (login) => {
+  if (!login) throw new Error("Login is required");
+  return await userRepository.getByLogin(login);
 };
 
 const createUser = async (data) => {
-  try {
-    const passwordHash = bcrypt.hashSync(data.password, 10);
+  const passwordHash = bcrypt.hashSync(data.password, 10);
 
-    const newUser = { ...data, password: passwordHash };
-    return await userRepository.createUser(newUser);
-  } catch (error) {
-    throw error;
-  }
+  const newUser = { ...data, password: passwordHash };
+  return await userRepository.createUser(newUser);
 };
 
 const updateUser = async (id, data) => {
-  try {
-    if (data?.password) {
-      data.password = bcrypt.hashSync(data.password, 10);
-    }
-    return await userRepository.updateUserById(id, data);
-  } catch (error) {
-    throw error;
+  if (data?.password) {
+    data.password = bcrypt.hashSync(data.password, 10);
   }
+  return await userRepository.updateUserById(id, data);
 };
 
 const deleteUser = async (userId) => {
@@ -55,6 +43,7 @@ const deleteUser = async (userId) => {
 
 export default {
   getUsers,
+  getByLogin,
   getUserById,
   createUser,
   updateUser,
