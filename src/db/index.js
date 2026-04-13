@@ -1,8 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import dotenv from "dotenv";
 import * as schema from "./schema.js";
 
+import dotenv from "dotenv"; // server.js da chaqirilsa bu yirda kerak emas
 dotenv.config();
 
 // 1. Ma'lumotlar bazasi bilan ulanish (Pool) yaratamiz

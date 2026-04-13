@@ -1,5 +1,5 @@
 import { verifyToken, getBlockedAccessToken } from "../helpers/jwt.helper.js";
-import { responseError } from "../helpers/responseHelper.js";
+import { responseError } from "../helpers/reponse.helper.js";
 
 export const authentication = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];

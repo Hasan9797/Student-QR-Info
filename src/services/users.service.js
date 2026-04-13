@@ -1,13 +1,22 @@
+import { ROLE_NAME } from "../enums/user-role.enum.js";
+import { CustomError } from "../errors/custom.error.js";
 import userRepository from "../repositories/users.repo.js";
 import bcrypt from "bcryptjs";
-import { deleteUserTokenByUserId } from "../repositories/userToken.repo.js";
+// import { deleteUserTokenByUserId } from "../repositories/userToken.repo.js";
 
 const getUsers = async (page, limit, queryParams) => {
   const query = Object.keys(queryParams).length > 0 ? queryParams : null;
   const users = await userRepository.getUsers(page, limit, query);
-  
+
+  const sanitizedData = users.data.map((user) => {
+    return {
+      ...user,
+      role: ROLE_NAME[user.role],
+    };
+  });
+
   return {
-    data: users.data,
+    data: sanitizedData,
     pagination: users.pagination,
   };
 };
@@ -15,8 +24,13 @@ const getUsers = async (page, limit, queryParams) => {
 const getUserById = async (userId) => {
   if (!userId) throw new Error("User id is required");
   const user = await userRepository.getUser(userId);
-  const { password, ...rest } = user;
-  return rest;
+
+  if (!user) throw CustomError.notFoundError(`User with ID ${userId} not found`);
+
+  return {
+    ...user,
+    role: ROLE_NAME[user.role],
+  };
 };
 
 const getByLogin = async (login) => {
@@ -39,7 +53,7 @@ const updateUser = async (id, data) => {
 };
 
 const deleteUser = async (userId) => {
-  await deleteUserTokenByUserId(userId);
+  // await deleteUserTokenByUserId(userId);
   return await userRepository.deleteUserById(userId);
 };
 

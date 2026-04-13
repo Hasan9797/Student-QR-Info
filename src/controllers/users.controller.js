@@ -1,6 +1,7 @@
 import userService from "../services/users.service.js";
+import { responseSuccess } from "../helpers/reponse.helper.js";
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   // const lang = req.headers['accept-language'] || 'ru';
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -14,17 +15,11 @@ const getUsers = async (req, res) => {
       pagination: result.pagination,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await userService.getUserById(parseInt(req.params.id));
 
@@ -34,35 +29,20 @@ const getUserById = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     await userService.createUser(req.body);
-    res.status(200).json({
-      success: true,
-      error: false,
-    });
+    res.status(200).json(responseSuccess());
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   try {
     await userService.updateUser(parseInt(req.params.id), req.body);
     res.status(200).json({
@@ -70,17 +50,11 @@ const updateUser = async (req, res) => {
       error: false,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
   try {
     const user = await userService.getUserById(parseInt(req.user.id));
     res.status(200).json({
@@ -89,17 +63,11 @@ const getMe = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
     await userService.deleteUser(parseInt(req.params.id));
     res.status(200).json({
@@ -107,13 +75,7 @@ const deleteUser = async (req, res) => {
       error: false,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: error.message,
-        code: 500,
-      },
-    });
+    next(error);
   }
 };
 

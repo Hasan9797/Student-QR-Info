@@ -21,8 +21,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, "../uploads")));
 
 // ROUTES
-// import testRoute from "./routes/user.route.js";
-// app.use("/api/test", testRoute);
+import usersRoute from "./routes/users.route.js";
+import authRoute from "./routes/auth.route.js";
+
+app.use("/api/users", usersRoute);
+app.use("/api/auth", authRoute);
 
 // Health check: Monitor server status and prevent root (/) 404 errors
 app.get("/", (req, res) => {

@@ -27,7 +27,8 @@ function dateFilterBuilder(date, dateType) {
   }
 }
 
-const usersWhereBuilder = (params) => {
+const usersWhereBuilder = (params, users) => {
+  if (!params) return undefined;
   const conditions = [];
 
   if (params.name) conditions.push(ilike(users.name, `%${params.name}%`));
