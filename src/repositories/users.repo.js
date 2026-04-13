@@ -2,28 +2,34 @@ import { and, gte, lte, ilike, eq } from "drizzle-orm";
 
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
+import queryBuilderHelper from "../helpers/queryBuilder.helper.js";
 
-const getUsers = async (query) => {
-  const { page = 1, limit = 10, ...filters } = query;
+const getUsers = async (page, limit, queryParams) => {
   const offset = (page - 1) * limit;
 
-  const where = and(
-    filters.login ? ilike(users.login, `%${filters.login}%`) : null,
-    filters.role ? eq(users.role, filters.role) : null,
-    filters.createdAt ? gte(users.createdAt, filters.createdAt) : null,
-  );
-
-  const data = await db
-    .select("id", "name", "role", "login")
+  let findAllQuery = db
+    .select({ id: users.id, name: users.name, role: users.role, login: users.login })
     .from(users)
-    .where(where)
     .limit(limit)
-    .offset(offset)
-    .all();
+    .offset(offset);
 
-  const count = await db.select({ count: users.id }).from(users).where(where).all();
+  let countQuery = db.select({ count: sql`count(*)` }).from(users);
 
-  return { data, pagination: { page, limit, total: count[0].count } };
+  if (queryParams && Object.keys(queryParams).length > 0) {
+    const sqlQuery = queryBuilderHelper.usersWhereBuilder(queryParams);
+
+    findAllQuery = findAllQuery.where(sqlQuery);
+    countQuery = countQuery.where(sqlQuery);
+  }
+
+  const [data, countResult] = await Promise.all([findAllQuery, countQuery]);
+
+  const total = Number(countResult[0]?.count) || 0;
+
+  return {
+    data,
+    pagination: { page, limit, total },
+  };
 };
 
 const getUser = async (userId) => {

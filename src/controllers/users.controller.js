@@ -2,18 +2,12 @@ import userService from "../services/users.service.js";
 
 const getUsers = async (req, res) => {
   // const lang = req.headers['accept-language'] || 'ru';
-  const query = {
-    page: parseInt(req.query.page) || 1,
-    limit: parseInt(req.query.limit) || 10,
-    filters: req.query.filters || [],
-    sort: req.query.sort || {
-      column: "id",
-      value: "desc",
-    },
-  };
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const query = req.query || {};
 
   try {
-    const result = await userService.getUsers(query);
+    const result = await userService.getUsers(page, limit, query);
     res.status(200).json({
       success: true,
       data: result.data,

@@ -2,8 +2,10 @@ import userRepository from "../repositories/users.repo.js";
 import bcrypt from "bcryptjs";
 import { deleteUserTokenByUserId } from "../repositories/userToken.repo.js";
 
-const getUsers = async (query) => {
-  const users = await userRepository.getUsers(query);
+const getUsers = async (page, limit, queryParams) => {
+  const query = Object.keys(queryParams).length > 0 ? queryParams : null;
+  const users = await userRepository.getUsers(page, limit, query);
+  
   return {
     data: users.data,
     pagination: users.pagination,

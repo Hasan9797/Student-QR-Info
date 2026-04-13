@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import redisClient from "../config/redis.js";
+import redisClient from "../db/redis.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret-access-key";
 

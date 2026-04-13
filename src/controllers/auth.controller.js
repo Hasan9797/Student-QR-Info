@@ -1,3 +1,4 @@
+import { generateAccessToken, generateRefreshToken } from "../helpers/jwt.helper.js";
 import usersService from "../services/users.service.js";
 import bcrypt from "bcryptjs";
 
@@ -14,8 +15,10 @@ const login = async (req, res) => {
     return res.status(401).json({ message: "Invalid login or password" });
   }
 
-  const token = "generated_jwt_token";
-  const refreshToken = "generated_refresh_token";
+  const payload = { id: user.id, role: user.role };
+
+  const token = generateAccessToken(payload);
+  const refreshToken = generateRefreshToken(payload);
   res.json({ token, refreshToken });
 };
 
@@ -24,8 +27,9 @@ const refreshToken = async (req, res) => {
   if (refreshToken !== "generated_refresh_token") {
     return res.status(401).json({ message: "Invalid refresh token" });
   }
-  const token = "generated_jwt_token";
-  res.status(200).json({ token });
+  const accessToken = generateAccessToken({ id: user.id });
+  const newRefreshToken = generateRefreshToken({ id: user.id });
+  res.status(200).json({ accessToken, newRefreshToken });
 };
 
 export default {
