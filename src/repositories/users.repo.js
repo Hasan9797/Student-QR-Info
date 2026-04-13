@@ -1,4 +1,4 @@
-import { and, gte, lte, ilike, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
@@ -33,11 +33,17 @@ const getUsers = async (page, limit, queryParams) => {
 };
 
 const getUser = async (userId) => {
-  return await db.select().from(users).where(eq(users.id, userId)).get();
+  return await db.query.users.findFirst({
+    where: eq(users.id, userId),
+    columns: { id: true, name: true, role: true, login: true },
+  });
 };
 
 const getByLogin = async (login) => {
-  return await db.select().from(users).where(eq(users.login, login)).get();
+  return await db.query.users.findFirst({
+    where: eq(users.login, login),
+    columns: { id: true, name: true, role: true, login: true },
+  });
 };
 
 const createUser = async (data) => {
