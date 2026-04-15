@@ -5,6 +5,7 @@ import { upload } from "../middlewares/fileupload.middleware.js";
 
 const router = Router();
 
+
 router.get("/", authentication, studentsController.getStudents);
 router.get("/:id", authentication, studentsController.getStudentById);
 router.post("/create", authentication, upload.single("file"), studentsController.createStudent);
