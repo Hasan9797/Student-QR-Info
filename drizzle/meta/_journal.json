@@ -15,6 +15,20 @@
       "when": 1776081299551,
       "tag": "0001_parched_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776081299552,
+      "tag": "0002_students_new_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776081299553,
+      "tag": "0003_add_photo_to_students",
+      "breakpoints": true
     }
   ]
 }

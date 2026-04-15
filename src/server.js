@@ -23,9 +23,11 @@ app.use(express.static(path.join(__dirname, "../uploads")));
 // ROUTES
 import usersRoute from "./routes/users.route.js";
 import authRoute from "./routes/auth.route.js";
+import studentsRoute from "./routes/students.route.js";
 
 app.use("/api/users", usersRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/students", studentsRoute);
 
 // Health check: Monitor server status and prevent root (/) 404 errors
 app.get("/", (req, res) => {

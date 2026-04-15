@@ -1,0 +1,86 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { randomUUID } from "crypto";
+import studentsService from "../services/students.service.js";
+import { responseSuccess, responsePaginated } from "../helpers/reponse.helper.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const UPLOADS_DIR = path.join(__dirname, "../../uploads/students");
+
+const savePhoto = (file) => {
+  if (!file) return null;
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  const ext = path.extname(file.originalname).toLowerCase();
+  const filename = `${randomUUID()}${ext}`;
+  fs.writeFileSync(path.join(UPLOADS_DIR, filename), file.buffer);
+  return `/students/${filename}`;
+};
+
+const deletePhoto = (photoPath) => {
+  if (!photoPath) return;
+  const fullPath = path.join(UPLOADS_DIR, path.basename(photoPath));
+  if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+};
+
+const getStudents = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const { page: _p, limit: _l, ...filters } = req.query;
+
+    const result = await studentsService.getStudents(page, limit, filters);
+    res.status(200).json(responsePaginated("Students retrieved successfully", result.data, result.pagination));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getStudentById = async (req, res, next) => {
+  try {
+    const student = await studentsService.getStudentById(parseInt(req.params.id));
+    res.status(200).json(responseSuccess("Student retrieved successfully", student));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createStudent = async (req, res, next) => {
+  try {
+    const photoUrl = savePhoto(req.file);
+    const student = await studentsService.createStudent({ ...req.body, photo: photoUrl });
+    res.status(201).json(responseSuccess("Student created successfully", student));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateStudent = async (req, res, next) => {
+  try {
+    const existing = await studentsService.getStudentById(parseInt(req.params.id));
+
+    let photoUrl = existing.photo;
+    if (req.file) {
+      deletePhoto(existing.photo);
+      photoUrl = savePhoto(req.file);
+    }
+
+    const student = await studentsService.updateStudent(parseInt(req.params.id), { ...req.body, photo: photoUrl });
+    res.status(200).json(responseSuccess("Student updated successfully", student));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteStudent = async (req, res, next) => {
+  try {
+    const existing = await studentsService.getStudentById(parseInt(req.params.id));
+    deletePhoto(existing.photo);
+    await studentsService.deleteStudent(parseInt(req.params.id));
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { getStudents, getStudentById, createStudent, updateStudent, deleteStudent };

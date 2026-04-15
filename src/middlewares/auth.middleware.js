@@ -11,7 +11,12 @@ export const authentication = async (req, res, next) => {
 
     const decode = verifyToken(token);
 
-    const isBlocked = await getBlockedAccessToken(token);
+    let isBlocked = false;
+    try {
+      isBlocked = await getBlockedAccessToken(token);
+    } catch (_) {
+      // Redis mavjud bo'lmasa yoki xato bo'lsa, token bloklangandek qabul qilinmaydi
+    }
 
     if (isBlocked) {
       throw new Error("Access denied, token is blocked");
