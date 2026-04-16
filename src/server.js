@@ -24,10 +24,12 @@ app.use(express.static(path.join(__dirname, "../uploads")));
 import usersRoute from "./routes/users.route.js";
 import authRoute from "./routes/auth.route.js";
 import studentsRoute from "./routes/students.route.js";
+import welderCertificatesRoute from "./routes/welder-certificates.route.js";
 
 app.use("/api/users", usersRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/students", studentsRoute);
+app.use("/api/welder-certificates", welderCertificatesRoute);
 
 // Health check: Monitor server status and prevent root (/) 404 errors
 app.get("/", (req, res) => {

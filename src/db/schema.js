@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, timestamp, uniqueIndex, varchar, date } from "drizzle-orm/pg-core";
 
 export const users = pgTable(
   "users",
@@ -37,5 +37,21 @@ export const refreshTokens = pgTable("refresh_tokens", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const welderCertificates = pgTable("welder_certificates", {
+  id: serial("id").primaryKey(),
+  introStatement: text("intro_statement"),
+  fullName: varchar("full_name", { length: 255 }),
+  theoryGrade: varchar("theory_grade", { length: 50 }),
+  practiceGrade: varchar("practice_grade", { length: 50 }),
+  qualificationDetails: text("qualification_details"),
+  issuanceBasis: text("issuance_basis"),
+  issuingBody: varchar("issuing_body", { length: 255 }),
+  city: varchar("city", { length: 100 }),
+  certificateNo: varchar("certificate_no", { length: 50 }),
+  issueDate: date("issue_date"),
+  expiryDate: date("expiry_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
