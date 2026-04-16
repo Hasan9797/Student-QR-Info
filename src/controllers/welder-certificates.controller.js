@@ -23,15 +23,6 @@ const getById = async (req, res, next) => {
   }
 };
 
-const getActive = async (req, res, next) => {
-  try {
-    const certificates = await welderCertificatesService.getActive();
-    res.status(200).json(responseSuccess("Active welder certificates retrieved successfully", certificates));
-  } catch (error) {
-    next(error);
-  }
-};
-
 const create = async (req, res, next) => {
   try {
     const certificate = await welderCertificatesService.create(req.body);
@@ -59,4 +50,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-export default { getAll, getById, getActive, create, update, remove };
+export default { getAll, getById, create, update, remove };

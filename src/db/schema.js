@@ -14,6 +14,21 @@ export const users = pgTable(
   (table) => [uniqueIndex("login_idx").on(table.login)],
 );
 
+export const welderCertificates = pgTable("welder_certificates", {
+  id: serial("id").primaryKey(),
+  introStatement: text("intro_statement"),
+  theoryGrade: varchar("theory_grade", { length: 50 }),
+  practiceGrade: varchar("practice_grade", { length: 50 }),
+  qualificationDetails: text("qualification_details"),
+  issuanceBasis: text("issuance_basis"),
+  issuingBody: varchar("issuing_body", { length: 255 }),
+  city: varchar("city", { length: 100 }),
+  certificateNo: varchar("certificate_no", { length: 50 }),
+  issueDate: date("issue_date"),
+  expiryDate: date("expiry_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const students = pgTable("students", {
   id: serial("id").primaryKey(),
   given: text("given").notNull(),
@@ -29,6 +44,7 @@ export const students = pgTable("students", {
   protocolRegistrationDate: text("protocol_registration_date").notNull(),
   commissionChairman: text("commission_chairman").notNull(),
   photo: text("photo"),
+  welderCertificateId: integer("welder_certificate_id").references(() => welderCertificates.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -37,22 +53,5 @@ export const refreshTokens = pgTable("refresh_tokens", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   token: text("token").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const welderCertificates = pgTable("welder_certificates", {
-  id: serial("id").primaryKey(),
-  introStatement: text("intro_statement"),
-  fullName: varchar("full_name", { length: 255 }),
-  theoryGrade: varchar("theory_grade", { length: 50 }),
-  practiceGrade: varchar("practice_grade", { length: 50 }),
-  qualificationDetails: text("qualification_details"),
-  issuanceBasis: text("issuance_basis"),
-  issuingBody: varchar("issuing_body", { length: 255 }),
-  city: varchar("city", { length: 100 }),
-  certificateNo: varchar("certificate_no", { length: 50 }),
-  issueDate: date("issue_date"),
-  expiryDate: date("expiry_date"),
-  status: integer("status").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
