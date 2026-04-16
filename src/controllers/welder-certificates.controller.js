@@ -14,6 +14,15 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const getStaticList = async (req, res, next) => {
+  try {
+    const list = await welderCertificatesService.getStaticList();
+    res.status(200).json(responseSuccess("Welder certificates static list retrieved successfully", list));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getById = async (req, res, next) => {
   try {
     const certificate = await welderCertificatesService.getById(parseInt(req.params.id));
@@ -50,4 +59,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-export default { getAll, getById, create, update, remove };
+export default { getAll, getStaticList, getById, create, update, remove };

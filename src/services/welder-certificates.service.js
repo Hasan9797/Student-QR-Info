@@ -6,6 +6,10 @@ const getAll = async (page, limit, queryParams) => {
   return await welderCertificatesRepo.getAll(page, limit, params);
 };
 
+const getStaticList = async () => {
+  return await welderCertificatesRepo.getStaticList();
+};
+
 const getById = async (id) => {
   const certificate = await welderCertificatesRepo.getById(id);
   if (!certificate) throw CustomError.notFoundError(`Welder certificate with ID ${id} not found`);
@@ -26,4 +30,4 @@ const remove = async (id) => {
   await welderCertificatesRepo.deleteById(id);
 };
 
-export default { getAll, getById, create, update, remove };
+export default { getAll, getStaticList, getById, create, update, remove };

@@ -22,6 +22,12 @@ const getAll = async (page, limit, params) => {
   };
 };
 
+const getStaticList = async () => {
+  return await db
+    .select({ id: welderCertificates.id, name: welderCertificates.certificatesName })
+    .from(welderCertificates);
+};
+
 const getById = async (id) => {
   return await db.query.welderCertificates.findFirst({
     where: eq(welderCertificates.id, id),
@@ -46,4 +52,4 @@ const deleteById = async (id) => {
   await db.delete(welderCertificates).where(eq(welderCertificates.id, id));
 };
 
-export default { getAll, getById, create, updateById, deleteById };
+export default { getAll, getStaticList, getById, create, updateById, deleteById };
