@@ -2,7 +2,7 @@ import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   // 1. Sxema (jadvallar) manzili
-  schema: "./src/db/schema.js",
+  schema: ["./src/db/schema.js", "./src/db/*.schema.js"],
 
   // 2. Migratsiya fayllari (SQL) tushadigan papka
   out: "./drizzle",

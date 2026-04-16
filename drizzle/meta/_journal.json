@@ -29,6 +29,13 @@
       "when": 1776081299553,
       "tag": "0003_add_photo_to_students",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776081299554,
+      "tag": "0004_create_welder_certificates",
+      "breakpoints": true
     }
   ]
 }
