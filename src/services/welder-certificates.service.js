@@ -1,10 +1,13 @@
 import { CustomError } from "../errors/custom.error.js";
 import welderCertificatesRepo from "../repositories/welder-certificates.repo.js";
-import { welderStatus } from "../enums/welder.enum.js";
 
 const getAll = async (page, limit, queryParams) => {
   const params = Object.keys(queryParams).length > 0 ? queryParams : null;
   return await welderCertificatesRepo.getAll(page, limit, params);
+};
+
+const getStaticList = async () => {
+  return await welderCertificatesRepo.getStaticList();
 };
 
 const getById = async (id) => {
@@ -13,25 +16,13 @@ const getById = async (id) => {
   return certificate;
 };
 
-const getActive = async () => {
-  return await welderCertificatesRepo.getActive();
-};
-
 const create = async (data) => {
-  return await welderCertificatesRepo.create({ ...data, status: welderStatus.INACTIVE });
+  return await welderCertificatesRepo.create(data);
 };
 
 const update = async (id, data) => {
   await getById(id);
-  const { status, ...rest } = data;
-  const updateData = { ...rest };
-  if (status !== undefined) {
-    if (status !== welderStatus.ACTIVE && status !== welderStatus.INACTIVE) {
-      throw CustomError.badRequestError("Invalid status value. Use 1 (active) or 0 (inactive)");
-    }
-    updateData.status = status;
-  }
-  return await welderCertificatesRepo.updateById(id, updateData);
+  return await welderCertificatesRepo.updateById(id, data);
 };
 
 const remove = async (id) => {
@@ -39,4 +30,4 @@ const remove = async (id) => {
   await welderCertificatesRepo.deleteById(id);
 };
 
-export default { getAll, getById, getActive, create, update, remove };
+export default { getAll, getStaticList, getById, create, update, remove };

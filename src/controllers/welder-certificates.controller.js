@@ -14,19 +14,19 @@ const getAll = async (req, res, next) => {
   }
 };
 
-const getById = async (req, res, next) => {
+const getStaticList = async (req, res, next) => {
   try {
-    const certificate = await welderCertificatesService.getById(parseInt(req.params.id));
-    res.status(200).json(responseSuccess("Welder certificate retrieved successfully", certificate));
+    const list = await welderCertificatesService.getStaticList();
+    res.status(200).json(responseSuccess("Welder certificates static list retrieved successfully", list));
   } catch (error) {
     next(error);
   }
 };
 
-const getActive = async (req, res, next) => {
+const getById = async (req, res, next) => {
   try {
-    const certificates = await welderCertificatesService.getActive();
-    res.status(200).json(responseSuccess("Active welder certificates retrieved successfully", certificates));
+    const certificate = await welderCertificatesService.getById(parseInt(req.params.id));
+    res.status(200).json(responseSuccess("Welder certificate retrieved successfully", certificate));
   } catch (error) {
     next(error);
   }
@@ -59,4 +59,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-export default { getAll, getById, getActive, create, update, remove };
+export default { getAll, getStaticList, getById, create, update, remove };
