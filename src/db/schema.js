@@ -53,5 +53,6 @@ export const welderCertificates = pgTable("welder_certificates", {
   certificateNo: varchar("certificate_no", { length: 50 }),
   issueDate: date("issue_date"),
   expiryDate: date("expiry_date"),
+  status: integer("status").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
