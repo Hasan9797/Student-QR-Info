@@ -46,12 +46,15 @@ const getStudentById = async (req, res, next) => {
 };
 
 const createStudent = async (req, res, next) => {
+  let photoUrl = null;
   try {
-    const photoUrl = savePhoto(req.file);
+    photoUrl = savePhoto(req.file);
     const student = await studentsService.createStudent({ ...req.body, photo: photoUrl });
     res.status(201).json(responseSuccess("Student created successfully", student));
   } catch (error) {
-    next(error);
+    // Agar baza xato bersa, yuklangan rasmni o'chirib tashlaymiz
+    if (photoUrl) deletePhoto(photoUrl);
+    next(error); // Global handlerga yuborish
   }
 };
 

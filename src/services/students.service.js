@@ -19,12 +19,16 @@ const createStudent = async (data) => {
 const updateStudent = async (id, data) => {
   const student = await studentsRepo.getStudentById(id);
   if (!student) throw CustomError.notFoundError(`Student with ID ${id} not found`);
+  
+  // TO'G'RI NOMNI CHAQIRISH:
   return await studentsRepo.updateStudentById(id, data);
 };
 
 const deleteStudent = async (id) => {
   const student = await studentsRepo.getStudentById(id);
   if (!student) throw CustomError.notFoundError(`Student with ID ${id} not found`);
+  
+  // TO'G'RI NOMNI CHAQIRISH:
   await studentsRepo.deleteStudentById(id);
 };
 
