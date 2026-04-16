@@ -1,4 +1,5 @@
 import { eq, ilike, and, sql } from "drizzle-orm";
+import { welderStatus } from "../enums/welder.enum.js";
 import { db } from "../db/index.js";
 import { welderCertificates } from "../db/schema.js";
 
@@ -43,8 +44,15 @@ const updateById = async (id, data) => {
   return updated;
 };
 
+const getActive = async () => {
+  return await db
+    .select()
+    .from(welderCertificates)
+    .where(eq(welderCertificates.status, welderStatus.ACTIVE));
+};
+
 const deleteById = async (id) => {
   await db.delete(welderCertificates).where(eq(welderCertificates.id, id));
 };
 
-export default { getAll, getById, create, updateById, deleteById };
+export default { getAll, getById, getActive, create, updateById, deleteById };
