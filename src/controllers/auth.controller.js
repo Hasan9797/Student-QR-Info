@@ -1,4 +1,5 @@
 import { generateAccessToken, generateRefreshToken } from "../helpers/jwt.helper.js";
+import { responseSuccess } from "../helpers/reponse.helper.js";
 import usersService from "../services/users.service.js";
 import bcrypt from "bcryptjs";
 
@@ -32,7 +33,13 @@ const refreshToken = async (req, res) => {
   res.status(200).json({ accessToken, newRefreshToken });
 };
 
+const getMe = async (req, res) => {
+  const user = await usersService.getUserById(req.user.id);
+  res.status(200).json(responseSuccess("User fetched successfully", user));
+};
+
 export default {
   login,
   refreshToken,
+  getMe,
 };
