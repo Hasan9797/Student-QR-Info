@@ -1,48 +1,48 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1775819497701,
-      "tag": "0000_rapid_lester",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1776081299551,
-      "tag": "0001_parched_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1776081299552,
-      "tag": "0002_students_new_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1776081299553,
-      "tag": "0003_add_photo_to_students",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1776081299554,
-      "tag": "0004_create_welder_certificates",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1776330679005,
-      "tag": "0005_fresh_blonde_phantom",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1775819497701,
+			"tag": "0000_rapid_lester",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1776081299551,
+			"tag": "0001_parched_hellfire_club",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1776081299552,
+			"tag": "0002_students_new_schema",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1776081299553,
+			"tag": "0003_add_photo_to_students",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1776081299554,
+			"tag": "0004_create_welder_certificates",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1776330679005,
+			"tag": "0005_fresh_blonde_phantom",
+			"breakpoints": true
+		}
+	]
 }
