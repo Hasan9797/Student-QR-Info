@@ -1,6 +1,7 @@
 import { eq, sql, ilike, and } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { students, welderCertificates } from "../db/schema.js";
+import { students } from "../db/schema.js";
+// import { welderCertificates } from "../db/schema.js";
 
 const getStudents = async (page = 1, limit = 10, params) => {
   const conditions = [];
@@ -46,22 +47,23 @@ const getStudentById = async (id) => {
       photo: students.photo,
       createdAt: students.createdAt,
       updatedAt: students.updatedAt,
-      welderCertificate: {
-        id: welderCertificates.id,
-        certificateNo: welderCertificates.certificateNo,
-        introStatement: welderCertificates.introStatement,
-        theoryGrade: welderCertificates.theoryGrade,
-        practiceGrade: welderCertificates.practiceGrade,
-        qualificationDetails: welderCertificates.qualificationDetails,
-        issuanceBasis: welderCertificates.issuanceBasis,
-        issuingBody: welderCertificates.issuingBody,
-        city: welderCertificates.city,
-        issueDate: welderCertificates.issueDate,
-        expiryDate: welderCertificates.expiryDate,
-      },
+      // welderCertificate: {
+      //   id: welderCertificates.id,
+      //   certificatesName: welderCertificates.certificatesName,
+      //   certificateNo: welderCertificates.certificateNo,
+      //   introStatement: welderCertificates.introStatement,
+      //   theoryGrade: welderCertificates.theoryGrade,
+      //   practiceGrade: welderCertificates.practiceGrade,
+      //   qualificationDetails: welderCertificates.qualificationDetails,
+      //   issuanceBasis: welderCertificates.issuanceBasis,
+      //   issuingBody: welderCertificates.issuingBody,
+      //   city: welderCertificates.city,
+      //   issueDate: welderCertificates.issueDate,
+      //   expiryDate: welderCertificates.expiryDate,
+      // },
     })
     .from(students)
-    .leftJoin(welderCertificates, eq(students.welderCertificateId, welderCertificates.id))
+    // .leftJoin(welderCertificates, eq(students.welderCertificateId, welderCertificates.id))
     .where(eq(students.id, id))
     .limit(1);
 

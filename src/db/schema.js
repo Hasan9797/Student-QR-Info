@@ -54,9 +54,6 @@ export const students = pgTable('students', {
 	protocolRegistrationDate: text('protocol_registration_date').notNull(),
 	commissionChairman: text('commission_chairman').notNull(),
 	photo: text('photo'),
-	welderCertificateId: integer('welder_certificate_id').references(
-		() => welderCertificates.id,
-	),
 	createdAt: timestamp('created_at').defaultNow(),
 	updatedAt: timestamp('updated_at').defaultNow(),
 })
