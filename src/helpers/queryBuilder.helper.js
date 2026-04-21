@@ -54,6 +54,7 @@ const studentsWhereBuilder = (params, students) => {
   if (params.passportNumber) conditions.push(ilike(students.passportNumber, `%${params.passportNumber}%`));
   if (params.certificateNumber) conditions.push(ilike(students.certificateNumber, `%${params.certificateNumber}%`));
   if (params.protocolNumber) conditions.push(ilike(students.protocolNumber, `%${params.protocolNumber}%`));
+  if(params.year) conditions.push(eq(students.year, Number(params.year)));
   if (params.commissionChairman) conditions.push(ilike(students.commissionChairman, `%${params.commissionChairman}%`));
 
   if (params?.date && params?.dateType) {
