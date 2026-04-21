@@ -57,13 +57,7 @@ export const students = pgTable('students', {
 	photo: text('photo'),
 	createdAt: timestamp('created_at').defaultNow(),
 	updatedAt: timestamp('updated_at').defaultNow(),
-	 }, table => [   
-    index('students_first_name_idx').on(table.firstName),
-    index('students_last_name_idx').on(table.lastName),
-    index('students_passport_number_idx').on(table.passportNumber),
-    index('students_specialty_idx').on(table.specialty),
-    index('students_created_at_idx').on(table.createdAt),
-  ])
+	 })
 
 export const refreshTokens = pgTable('refresh_tokens', {
 	id: serial('id').primaryKey(),
