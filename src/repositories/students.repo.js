@@ -1,20 +1,15 @@
-import { eq, sql, ilike, and } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { students } from "../db/schema.js";
+import queryBuilder from "../helpers/queryBuilder.helper.js";
 // import { welderCertificates } from "../db/schema.js";
 
 const getStudents = async (page = 1, limit = 10, params) => {
-  const conditions = [];
-
-  if (params?.firstName) conditions.push(ilike(students.firstName, `%${params.firstName}%`));
-  if (params?.lastName) conditions.push(ilike(students.lastName, `%${params.lastName}%`));
-  if (params?.specialty) conditions.push(ilike(students.specialty, `%${params.specialty}%`));
-  if (params?.passportNumber) conditions.push(ilike(students.passportNumber, `%${params.passportNumber}%`));
-
-  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+  const whereClause = queryBuilder.studentsWhereBuilder(params, students);
+  const orderClause = queryBuilder.studentsSortBuilder(params?.sortBy, params?.order, students);
 
   const [data, countResult] = await Promise.all([
-    db.select().from(students).where(whereClause).limit(limit).offset((page - 1) * limit),
+    db.select().from(students).where(whereClause).orderBy(orderClause).limit(limit).offset((page - 1) * limit),
     db.select({ total: sql`count(*)`.mapWith(Number) }).from(students).where(whereClause),
   ]);
 
@@ -89,10 +84,23 @@ const deleteStudentById = async (id) => {
   return deleted ?? null;
 };
 
+const getMonthlyStats = async () => {
+  const result = await db.execute(sql`
+    SELECT
+      TO_CHAR(created_at, 'YYYY-MM') AS month,
+      COUNT(*)::int AS total
+    FROM students
+    GROUP BY month
+    ORDER BY month ASC
+  `);
+  return result.rows;
+};
+
 export default {
   getStudents,
   getStudentById,
   createStudent,
   updateStudentById,
   deleteStudentById,
+  getMonthlyStats,
 };
