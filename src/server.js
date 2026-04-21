@@ -25,7 +25,9 @@ import usersRoute from "./routes/users.route.js";
 import authRoute from "./routes/auth.route.js";
 import studentsRoute from "./routes/students.route.js";
 import welderCertificatesRoute from "./routes/welder-certificates.route.js";
+import testRoute from "./routes/test.route.js";
 
+app.use("/api/test", testRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/students", studentsRoute);

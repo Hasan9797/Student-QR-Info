@@ -13,7 +13,9 @@ const pool = new pg.Pool({
 
 // 2. Drizzle ob'ektini yaratamiz
 // schema: schema - bu orqali Drizzle bizning jadvallarni tanib oladi (Querying uchun qulay)
-export const db = drizzle(pool, { ...schema, ...partitionSchema });
+export const db = drizzle(pool, {
+  schema: { ...schema, ...partitionSchema },
+});
 
 // Ulanishda xatolik bo'lsa konsolga chiqarish
 pool.on("error", (err) => {
