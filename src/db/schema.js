@@ -40,25 +40,6 @@ export const welderCertificates = pgTable('welder_certificates', {
 	createdAt: timestamp('created_at').defaultNow(),
 })
 
-export const students = pgTable('students', {
-	id: serial('id').primaryKey(),
-	given: text('given').notNull(),
-	lastName: text('last_name').notNull(),
-	firstName: text('first_name').notNull(),
-	patronymic: text('patronymic').notNull(),
-	specialty: text('specialty').notNull(),
-	qualification: text('qualification').notNull(),
-	birthDate: text('birth_date').notNull(),
-	passportNumber: text('passport_number').unique().notNull(),
-	certificateNumber: integer('certificate_number').notNull(),
-	protocolNumber: text('protocol_number').notNull(),
-	protocolRegistrationDate: text('protocol_registration_date').notNull(),
-	commissionChairman: text('commission_chairman').notNull(),
-	photo: text('photo'),
-	createdAt: timestamp('created_at').defaultNow(),
-	updatedAt: timestamp('updated_at').defaultNow(),
-	 })
-
 export const refreshTokens = pgTable('refresh_tokens', {
 	id: serial('id').primaryKey(),
 	userId: integer('user_id').references(() => users.id),

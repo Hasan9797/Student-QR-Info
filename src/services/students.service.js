@@ -13,23 +13,13 @@ const getStudentById = async (id) => {
   return student;
 };
 
-const createStudent = async (data) => {
-  // if (data.welderCertificateId) {
-  //   const certificate = await welderCertificatesRepo.getById(data.welderCertificateId);
-  //   if (!certificate) throw CustomError.notFoundError(`Welder certificate with ID ${data.welderCertificateId} not found`);
-  // }
-  return await studentsRepo.createStudent(data);
+const createStudent = async (requestData) => {
+const currentYear = new Date().getFullYear();
+  return await studentsRepo.createStudent(requestData, currentYear);
 };
-
 const updateStudent = async (id, data) => {
   const student = await studentsRepo.getStudentById(id);
   if (!student) throw CustomError.notFoundError(`Student with ID ${id} not found`);
-
-  // if (data.welderCertificateId) {
-  //   const certificate = await welderCertificatesRepo.getById(data.welderCertificateId);
-  //   if (!certificate) throw CustomError.notFoundError(`Welder certificate with ID ${data.welderCertificateId} not found`);
-  // }
-
   return await studentsRepo.updateStudentById(id, data);
 };
 
