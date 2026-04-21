@@ -86,4 +86,13 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
-export default { getStudents, getStudentById, createStudent, updateStudent, deleteStudent };
+const getMonthlyStats = async (req, res, next) => {
+  try {
+    const stats = await studentsService.getMonthlyStats();
+    res.status(200).json(responseSuccess("Monthly stats retrieved successfully", stats));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { getStudents, getStudentById, createStudent, updateStudent, deleteStudent, getMonthlyStats };

@@ -39,4 +39,8 @@ const deleteStudent = async (id) => {
   await studentsRepo.deleteStudentById(id);
 };
 
-export default { getStudents, getStudentById, createStudent, updateStudent, deleteStudent };
+const getMonthlyStats = async () => {
+  return await studentsRepo.getMonthlyStats();
+};
+
+export default { getStudents, getStudentById, createStudent, updateStudent, deleteStudent, getMonthlyStats };
