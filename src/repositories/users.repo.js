@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { users } from '../db/schema.js'
-import queryBuilderHelper from '../helpers/queryBuilder.helper.js'
+import queryBuilderHelper from '../helpers/query-builder.helper.js'
 
 const getUsers = async (page, limit, queryParams) => {
 	const sqlQuery = queryBuilderHelper.usersWhereBuilder(queryParams, users)
