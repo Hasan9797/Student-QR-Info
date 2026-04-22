@@ -14,7 +14,7 @@ router.post(
 	upload.single('file'),
 	studentsController.createStudent,
 )
-router.put(
+router.post(
 	'/update/:id',
 	authentication,
 	upload.single('file'),

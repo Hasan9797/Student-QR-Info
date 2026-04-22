@@ -66,49 +66,78 @@ const getStudents = async (req, res, next) => {
 }
 
 const getStudentById = async (req, res, next) => {
-	try {
-		const student = await studentsService.getStudentById(
-			parseInt(req.params.id),
-		)
-		res
-			.status(200)
-			.json(responseSuccess('Student retrieved successfully', student))
-	} catch (error) {
-		next(error)
-	}
+  try {
+    const { id } = req.params;
+    const { year } = req.query;
+    if (!year) {
+      return res.status(400).json({
+        success: false,
+        message: "Ma'lumotni olish uchun 'year' parametri ko'rsatilishi shart!"
+      });
+    }
+
+    const student = await studentsService.getStudentById(id, parseInt(year));
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Talaba topilmadi"
+      });
+    }
+
+    res.status(200).json(responseSuccess('Student retrieved successfully', student));
+  } catch (error) {
+    next(error);
+  }
 }
 
 const updateStudent = async (req, res, next) => {
-	try {
-		const existing = await studentsService.getStudentById(
-			parseInt(req.params.id),
-		)
+  try {
+    const { id } = req.params;
+    const { year } = req.query; // URL oxiridagi ?year=2026
 
-		let photoUrl = existing.photo
-		if (req.file) {
-			deletePhoto(existing.photo)
-			photoUrl = savePhoto(req.file)
-		}
+    // Qat'iy tekshiruv
+    if (!year || isNaN(parseInt(year))) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Year query parametri (raqam) majburiy!" 
+      });
+    }
 
-		const student = await studentsService.updateStudent(
-			parseInt(req.params.id),
-			{ ...req.body, photo: photoUrl },
-		)
-		res
-			.status(200)
-			.json(responseSuccess('Student updated successfully', student))
-	} catch (error) {
-		next(error)
-	}
+    const numericYear = parseInt(year);
+
+    // Tartib: (id, year, data)
+    const student = await studentsService.updateStudent(
+      id, 
+      numericYear, 
+      req.body
+    );
+
+    res.status(200).json({ success: true, data: student });
+  } catch (error) {
+    next(error);
+  }
 }
 
 const deleteStudent = async (req, res, next) => {
 	try {
-		const existing = await studentsService.getStudentById(
-			parseInt(req.params.id),
-		)
+		 const { id } = req.params;
+    const { year } = req.query;
+		if (!year || isNaN(parseInt(year))) {
+			return res.status(400).json({
+				success: false,
+				message: "Ma'lumotni o'chirish uchun 'year' parametri (raqam) ko'rsatilishi shart!"
+			});
+		}
+		const existing = await studentsService.getStudentById(req.params.id, parseInt(year));
+		if (!existing) {
+			return res.status(404).json({
+				success: false,
+				message: "Talaba topilmadi"
+			});
+		}
 		deletePhoto(existing.photo)
-		await studentsService.deleteStudent(parseInt(req.params.id))
+		await studentsService.deleteStudent(req.params.id, parseInt(year))
 		res.status(204).send()
 	} catch (error) {
 		next(error)

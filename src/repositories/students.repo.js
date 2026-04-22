@@ -1,7 +1,7 @@
-import { eq, sql } from 'drizzle-orm'
+import { eq, sql, and } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { students } from '../db/partition.js'
-import queryBuilder from '../helpers/queryBuilder.helper.js'
+import queryBuilder from '../helpers/query-builder.helper.js'
 // import { welderCertificates } from "../db/schema.js";
 
 async function ensureYearlyPartition(year) {
@@ -17,18 +17,13 @@ async function ensureYearlyPartition(year) {
 
 const getStudents = async (page, limit, params) => {
 	const whereClause = queryBuilder.studentsWhereBuilder(params, students)
-	const orderClause = queryBuilder.studentsSortBuilder(
-		params?.sortBy,
-		params?.order,
-		students,
-	)
-
+	const orderByClause = queryBuilder.studentsSortBuilder(params, students)
 	const [data, countResult] = await Promise.all([
 		db
 			.select()
 			.from(students)
 			.where(whereClause)
-			.orderBy(orderClause)
+			.orderBy(orderByClause)
 			.limit(limit)
 			.offset((page - 1) * limit),
 		db
@@ -47,7 +42,7 @@ const getStudents = async (page, limit, params) => {
 	}
 }
 
-const getStudentById = async id => {
+const getStudentById = async (id, year) => {
 	const result = await db
 		.select({
 			id: students.id,
@@ -83,14 +78,19 @@ const getStudentById = async id => {
 		})
 		.from(students)
 		// .leftJoin(welderCertificates, eq(students.welderCertificateId, welderCertificates.id))
-		.where(eq(students.id, id))
+		.where(
+      and(
+        eq(students.id, id), 
+        eq(students.year, Number(year)) // Qiymatni raqamga o'girish shart
+      )
+    )
 		.limit(1)
 
 	return result[0] ?? null
 }
 
 const createStudent = async (requestData, currentYear) => {
-  await ensureYearlyPartition(currentYear)
+	await ensureYearlyPartition(currentYear)
 	const [student] = await db
 		.insert(students)
 		.values({
@@ -101,19 +101,29 @@ const createStudent = async (requestData, currentYear) => {
 	return student
 }
 
-const updateStudentById = async (id, data) => {
-	const [updated] = await db
-		.update(students)
-		.set({ ...data, updatedAt: new Date() })
-		.where(eq(students.id, id))
-		.returning()
-	return updated
-}
+const updateStudentById = async (id, data, year) => {
+  if (isNaN(year)) {
+    throw new Error("Repository Error: Year is NaN");
+  }
 
-const deleteStudentById = async id => {
+  const [updated] = await db
+    .update(students)
+    .set({ ...data, updatedAt: new Date() })
+    .where(
+      and(
+        eq(students.id, id),
+        eq(students.year, year)
+      )
+    )
+    .returning();
+
+  return updated;
+};
+
+const deleteStudentById = async (id, year) => {
 	const [deleted] = await db
 		.delete(students)
-		.where(eq(students.id, id))
+		.where(and(eq(students.id, id), eq(students.year, year)))
 		.returning()
 	return deleted ?? null
 }
@@ -130,7 +140,12 @@ const getMonthlyStats = async () => {
 	return result.rows
 }
 
+const dropOldPartition = async(tableName) =>{
+	await db.execute(sql.raw(`DROP TABLE IF EXISTS ${tableName};`))
+}
+
 export default {
+	dropOldPartition,
 	getStudents,
 	getStudentById,
 	createStudent,
