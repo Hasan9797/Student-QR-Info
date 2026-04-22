@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 import cors from 'cors'
 import errorHandler from './middlewares/error-handler.middleware.js'
 import { CustomError } from './errors/custom.error.js'
-import './jobs/index.js'
+import { initJobs } from "./jobs/index.js";
 
 dotenv.config()
 
@@ -62,4 +62,5 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 8000
 app.listen(PORT, () => {
 	console.log(`Server is running on port: ${PORT}`)
+  initJobs();
 })
