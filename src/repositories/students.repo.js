@@ -2,10 +2,19 @@ import { eq, sql, and } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { students } from '../db/partition.js'
 import queryBuilder from '../helpers/query-builder.helper.js'
+import redisClient from '../db/redis.js'
 // import { welderCertificates } from "../db/schema.js";
 
 async function ensureYearlyPartition(year) {
 	const tableName = `students_${year}`
+	const cacheKey = `table_exists:${tableName}`
+
+	const isCached = await redisClient.get(cacheKey)
+
+	if (isCached) {
+		return
+	}
+
 	await db.execute(
 		sql.raw(`
     CREATE TABLE IF NOT EXISTS ${tableName} 
@@ -13,6 +22,9 @@ async function ensureYearlyPartition(year) {
     FOR VALUES FROM (${year}) TO (${year + 1});
   `),
 	)
+	await redisClient.set(cacheKey, 'true', {
+		EX: 604800, // 7 days in seconds
+	})
 }
 
 const getStudents = async (page, limit, params) => {
@@ -79,11 +91,11 @@ const getStudentById = async (id, year) => {
 		.from(students)
 		// .leftJoin(welderCertificates, eq(students.welderCertificateId, welderCertificates.id))
 		.where(
-      and(
-        eq(students.id, id), 
-        eq(students.year, Number(year)) // Qiymatni raqamga o'girish shart
-      )
-    )
+			and(
+				eq(students.id, id),
+				eq(students.year, Number(year)), // Qiymatni raqamga o'girish shart
+			),
+		)
 		.limit(1)
 
 	return result[0] ?? null
@@ -102,23 +114,18 @@ const createStudent = async (requestData, currentYear) => {
 }
 
 const updateStudentById = async (id, data, year) => {
-  if (isNaN(year)) {
-    throw new Error("Repository Error: Year is NaN");
-  }
+	if (isNaN(year)) {
+		throw new Error('Repository Error: Year is NaN')
+	}
 
-  const [updated] = await db
-    .update(students)
-    .set({ ...data, updatedAt: new Date() })
-    .where(
-      and(
-        eq(students.id, id),
-        eq(students.year, year)
-      )
-    )
-    .returning();
+	const [updated] = await db
+		.update(students)
+		.set({ ...data, updatedAt: new Date() })
+		.where(and(eq(students.id, id), eq(students.year, year)))
+		.returning()
 
-  return updated;
-};
+	return updated
+}
 
 const deleteStudentById = async (id, year) => {
 	const [deleted] = await db
@@ -140,7 +147,7 @@ const getMonthlyStats = async () => {
 	return result.rows
 }
 
-const dropOldPartition = async(tableName) =>{
+const dropOldPartition = async tableName => {
 	await db.execute(sql.raw(`DROP TABLE IF EXISTS ${tableName};`))
 }
 

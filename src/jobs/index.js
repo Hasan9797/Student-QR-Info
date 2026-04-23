@@ -24,5 +24,5 @@ export const initJobs = () => {
 		},
 	)
 
-	console.log('✅ All background jobs initialized (Running every minute)')
+	console.log('✅ All background jobs initialized (Running every day at midnight)')
 }

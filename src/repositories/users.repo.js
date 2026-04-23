@@ -29,7 +29,11 @@ const getUsers = async (page, limit, queryParams) => {
 
 	return {
 		data,
-		pagination: { page, limit, total },
+		pagination: {
+			page: Number(page),
+			limit: Number(limit),
+			total: countResult[0]?.total ?? 0,
+		},
 	}
 }
 
